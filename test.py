@@ -1,23 +1,22 @@
 import unittest
+import os
+from patrick import PatrickBot
 
-class TestShittyPatrickBot(unittest.TestCase):
+class TestPatrickBot(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.pwd_environ_var = "patrick_p"
+        self.bot = PatrickBot()
 
     def test_password_environment_var(self):
         '''
         Make sure environment variable patrick_p 
         is set to something on this machine
         '''
-        pass
+        self.assertTrue(bool(os.environ.get(self.pwd_environ_var)))
 
     def test_login(self):
-        try:
-            # login(username, password)
-
-        except:
-            self.fail()
+        self.assertTrue(self.bot.login())
 
 if __name__ == '__main__':
     unittest.main()

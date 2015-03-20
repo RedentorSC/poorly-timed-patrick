@@ -6,5 +6,6 @@ Written in python3 using PRAW
 
 ## Setup
 sudo pip3 install praw
+source /etc/environment
 
 
