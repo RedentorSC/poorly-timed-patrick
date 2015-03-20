@@ -16,3 +16,17 @@ class ShittyPatrickBot(object):
         was thrown.
         '''
         self.logged_in = True
+
+
+    def is_flagged_comment(self, comment):
+        '''take in a comment, determine if its valid, return true'''
+        comment = comment.lower().strip()
+        if comment.startswith("is this"):
+            return True
+        else:
+            return False
+            
+
+
+
+
