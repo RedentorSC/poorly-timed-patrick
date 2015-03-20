@@ -24,3 +24,12 @@ class PatrickBot(object):
             return False
 
 
+    def is_flagged_comment(self, comment):
+        '''take in a comment, determine if its valid, return true'''
+        comment = comment.lower().strip()
+        if comment.startswith("is this"):
+            return True
+        else:
+            return False
+
+
