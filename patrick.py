@@ -31,5 +31,14 @@ class PatrickBot(object):
             return True
         else:
             return False
+    
+    '''
+    def acquire_comments(self):
+        subreddit = r.get_subreddit('benpringle')
+        for submission in subreddit.get_new(limit = 10):
+            if submission.is_flagged_comment:
+                submission.respond
+
+    '''
 
 

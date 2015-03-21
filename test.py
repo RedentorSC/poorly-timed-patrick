@@ -7,6 +7,8 @@ class TestPatrickBot(unittest.TestCase):
     def setUp(self):
         self.pwd_environ_var = "patrick_p"
         self.bot = PatrickBot()
+        self.test_comment_true = " is this the krusty krab"
+        self.test_comment_false = "oh long johnson"
 
     def test_password_environment_var(self):
         '''
@@ -18,5 +20,13 @@ class TestPatrickBot(unittest.TestCase):
     def test_login(self):
         self.assertTrue(self.bot.login())
 
+    def test_is_flagged_comment(self):
+        self.assertTrue(self.bot.is_flagged_comment(self.test_comment_true))
+        self.assertFalse(self.bot.is_flagged_comment(self.test_comment_false))
+    '''
+    def test_comment_acquistion(self):
+        self.assertTrue(self.bot.aquire_comment.is_flagged_comment)
+
+    '''
 if __name__ == '__main__':
     unittest.main()
