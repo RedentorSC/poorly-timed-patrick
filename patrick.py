@@ -1,5 +1,8 @@
 import os
 import praw
+import time
+
+
 
 class PatrickBot(object):
     '''
@@ -9,6 +12,7 @@ class PatrickBot(object):
     def __init__(self):
         self.r         = praw.Reddit(user_agent = 'shitty_patrick_bot')
         self.logged_in = False
+        self.subreddits = ["benpringle", "starcraftcirclejerk"]
 
     def login(self):
         '''
@@ -33,16 +37,29 @@ class PatrickBot(object):
             return False
     
 
-    def acquire_comments(self):
-        subreddit = self.r.get_subreddit('benpringle')
-        for submission in subreddit.get_new(limit = 10):
+    def parse_comments(self, subreddit):
+        subreddit = self.r.get_subreddit(subreddit)
+        for submission in subreddit.get_new(limit = 25):
             flat_comments = praw.helpers.flatten_tree(submission.comments)
             for comment in flat_comments:
-                comment = comment.body
-                if not self.is_flagged_comment(comment):
-                    print (comment)
+                text = comment.body
+                if self.is_flagged_comment(text):
+                    print (text)
+                    print(dir(comment))
         return True
 
-    
+    def run(self):
+        self.login()
+        while True:
+            for subreddit in self.subreddits:
+               self.parse_comments(subreddit)
+            time.sleep(15 * 60 * 60)
+
+if __name__ == '__main__':
+
+    bot = PatrickBot().run()
+
+
+
 
 
