@@ -32,13 +32,17 @@ class PatrickBot(object):
         else:
             return False
     
-    '''
-    def acquire_comments(self):
-        subreddit = r.get_subreddit('benpringle')
-        for submission in subreddit.get_new(limit = 10):
-            if submission.is_flagged_comment:
-                submission.respond
 
-    '''
+    def acquire_comments(self):
+        subreddit = self.r.get_subreddit('benpringle')
+        for submission in subreddit.get_new(limit = 10):
+            flat_comments = praw.helpers.flatten_tree(submission.comments)
+            for comment in flat_comments:
+                comment = comment.body
+                if not self.is_flagged_comment(comment):
+                    print (comment)
+        return True
+
+    
 
 

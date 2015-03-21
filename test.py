@@ -23,10 +23,11 @@ class TestPatrickBot(unittest.TestCase):
     def test_is_flagged_comment(self):
         self.assertTrue(self.bot.is_flagged_comment(self.test_comment_true))
         self.assertFalse(self.bot.is_flagged_comment(self.test_comment_false))
-    '''
-    def test_comment_acquistion(self):
-        self.assertTrue(self.bot.aquire_comment.is_flagged_comment)
+    
+    def test_acquire_comments(self):
+        self.assertTrue(self.bot.acquire_comments())
 
-    '''
+
+    
 if __name__ == '__main__':
     unittest.main()
