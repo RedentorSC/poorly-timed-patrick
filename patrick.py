@@ -12,7 +12,8 @@ class PatrickBot(object):
     def __init__(self):
         self.r         = praw.Reddit(user_agent = 'shitty_patrick_bot')
         self.logged_in = False
-        self.subreddits = ["benpringle", "starcraftcirclejerk"]
+        self.subreddits = ["playground"]
+        self.response = "No, this is Patrick. \n\n\n\n\n\n^This ^message ^was ^created ^by ^a ^bot"
 
     def login(self):
         '''
@@ -36,6 +37,12 @@ class PatrickBot(object):
         else:
             return False
     
+    def should_reply(self, comment):
+        
+        print ([reply.author.user_name for reply in comment.replies])
+        return not 'shitty_patrick_bot' in [reply.author.user_name for reply in comment.replies]
+    
+
 
     def parse_comments(self, subreddit):
         subreddit = self.r.get_subreddit(subreddit)
@@ -43,10 +50,14 @@ class PatrickBot(object):
             flat_comments = praw.helpers.flatten_tree(submission.comments)
             for comment in flat_comments:
                 text = comment.body
-                if self.is_flagged_comment(text):
-                    print (text)
-                    print(dir(comment))
+                if self.is_flagged_comment(text) and self.should_reply(comment):
+                    print(dir(comment.author))
+                    
+                    print ("Replying to comment from {}. Text: \n{}".format(comment.author, text))
+                    #comment.reply(self.response)
+                    #now check if we have already commented on this user's ill fated remark
         return True
+
 
     def run(self):
         self.login()
