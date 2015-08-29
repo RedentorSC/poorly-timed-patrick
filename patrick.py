@@ -14,7 +14,7 @@ class PatrickBot(object):
 
         self.r         = praw.Reddit(user_agent = 'shitty_patrick_bot')
         self.logged_in = False
-        self.subreddits = ["playground", "benpringle", "starcraftcirclejerk", "shittyaskscience", "me_irl", "starcraft"]
+        self.subreddits = ["spongebob", "funny", "adviceanimals", "askreddit", "benpringle", "starcraftcirclejerk", "shittyaskscience", "me_irl", "starcraft"]
         self.response = "No, this is Patrick. \n\n\n\n\n\n^This ^message ^was ^created ^by ^a ^bot"
 
     def login(self):
@@ -44,7 +44,7 @@ class PatrickBot(object):
     def process_comments(self, subreddit):
         """Grab 25 submissions from a subreddit and reply to any flagged comments."""
         subreddit = self.r.get_subreddit(subreddit)
-        for submission in subreddit.get_new(limit = 25):
+        for submission in subreddit.get_hot(limit = 25):
             flat_comments = praw.helpers.flatten_tree(submission.comments)
             for comment in flat_comments:
                 text = comment.body
