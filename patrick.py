@@ -12,11 +12,11 @@ class PatrickBot(object):
     def __init__(self):
         logging.getLogger().setLevel(logging.INFO)
 
-        self.r         = praw.Reddit(user_agent = 'shitty_patrick_bot')
-        self.logged_in = False
-        self.subreddits = ["spongebob", "funny", "adviceanimals", "askreddit", "benpringle", "starcraftcirclejerk", "shittyaskscience", "me_irl", "starcraft"]
-        self.response = "No, this is Patrick. \n\n\n\n\n\n^This ^message ^was ^created ^by ^a ^bot"
-        self.sleep_time = 10 * 60
+        self.r              = praw.Reddit(user_agent = 'shitty_patrick_bot')
+        self.subreddits     = ["spongebob", "funny", "adviceanimals", "askreddit", "benpringle", "starcraftcirclejerk", "shittyaskscience", "me_irl", "starcraft"]
+        self.response       = "No, this is Patrick. \n\n\n\n\n\n^This ^message ^was ^created ^by ^a ^bot"
+        self.sleep_time     = 10 * 60
+        self.comment_ids    = set()
 
     def login(self):
         """Returns True  if login was successful
@@ -25,34 +25,30 @@ class PatrickBot(object):
         logging.info("Attempting login...")
         try:
             self.r.login('shitty_patrick_bot', os.environ['patrick_p'])
-            self.logged_in = True
             logging.info("Login successful.")
             return True
-
         except:
             logging.info("Login failed.")
             return False
 
-
     def is_flagged_comment(self, comment):
         """Check for comments starting with 'is this' """
-        return comment.lower().strip().startswith("is this")
+        return comment.body.lower().strip().startswith("is this")
     
     def already_done(self, comment):
         """Check if we have already written a reply in a previous run."""
-        return 'shitty_patrick_bot' in [reply.author.name for reply in comment.replies if reply.author]
+        self.comment_ids = set([c.parent_id for c in self.r.user.get_comments()])
+        return comment.fullname in self.comment_ids
 
-    def _process(self, comment):
+    def _process_comment_obj(self, comment):
         """Recursively handle MoreComments objects"""
         if isinstance(comment, praw.objects.MoreComments):
-            logging.info("Expanding MoreComments object...")
             for obj in comment.comments():
-                self._process(obj)
+                self._process_comment_obj(obj)
 
         elif isinstance(comment, praw.objects.Comment):
-            text = comment.body
-            if self.is_flagged_comment(text) and not self.already_done(comment):                    
-                logging.info("Replying to comment from {}. Text: \n{}".format(comment.author, text))
+            if self.is_flagged_comment(comment) and not self.already_done(comment):                    
+                logging.info("Replying to comment from {}. Text: {}".format(comment.author, comment.body))
                 comment.reply(self.response)
 
     def process_comments(self, subreddit):
@@ -62,7 +58,7 @@ class PatrickBot(object):
             flat_comments = praw.helpers.flatten_tree(submission.comments)
             for comment in flat_comments:
                 try:
-                    self._process(comment)
+                    self._process_comment_obj(comment)
                 except Exception as e:
                     logging.warning(e)
                     continue
