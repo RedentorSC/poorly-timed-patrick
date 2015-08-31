@@ -13,7 +13,7 @@ class PatrickBot(object):
         logging.getLogger().setLevel(logging.INFO)
 
         self.r              = praw.Reddit(user_agent = 'shitty_patrick_bot')
-        self.subreddits     = ["spongebob", "funny", "adviceanimals", "askreddit", "benpringle", "starcraftcirclejerk", "shittyaskscience", "me_irl", "starcraft"]
+        self.subreddits     = ["spongebob", "shittyaskscience", "starcraft", "adviceanimals", "benpringle", "starcraftcirclejerk", "me_irl", "funny"]
         self.response       = "No, this is Patrick. \n\n\n\n\n\n^This ^message ^was ^created ^by ^a ^bot"
         self.sleep_time     = 10 * 60
         self.comment_ids    = set()
@@ -50,6 +50,7 @@ class PatrickBot(object):
             if self.is_flagged_comment(comment) and not self.already_done(comment):                    
                 logging.info("Replying to comment from {}. Text: {}".format(comment.author, comment.body))
                 comment.reply(self.response)
+                comment.upvote()
 
     def process_comments(self, subreddit):
         """Grab 25 submissions from a subreddit and reply to any flagged comments."""
